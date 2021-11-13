@@ -140,7 +140,8 @@ const run = async () => {
         // Delete an order
         app.delete('/cancelOrder/:id', async (req, res) => {
             const id = req.params.id;
-            const result = await ordersCollection.deleteOne({ _id: ObjectId(id) });
+            console.log(id);
+            const result = await ordersCollection.deleteOne({ _id: id });
             console.log(result);
             res.json(result);
         });
@@ -149,7 +150,7 @@ const run = async () => {
         app.put('/updateStatus/:id', async (req, res) => {
             const id = req.params.id;
             const newStatus = req.body.updatedStatus;
-            const filter = { _id: ObjectId(id) };
+            const filter = { _id: id };
             const result = await ordersCollection.updateOne(filter, {
                 $set: { status: newStatus }
             });
