@@ -16,9 +16,6 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 
 // Verify token
-
-// super-cars-firebase-adminsdk.json
-
 const admin = require("firebase-admin");
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({
@@ -46,6 +43,7 @@ const run = async () => {
         const carCollection = database.collection("cars");
         const usersCollection = database.collection("users");
         const ordersCollection = database.collection("orders");
+        const reviewCollection = database.collection("reviews");
 
         // Add a service
 
@@ -124,7 +122,6 @@ const run = async () => {
             else {
                 res.status(403).json({ message: "You don't any have access to make admin!" })
             }
-
         });
 
         // Get my orders
@@ -144,6 +141,7 @@ const run = async () => {
         app.delete('/cancelOrder/:id', async (req, res) => {
             const id = req.params.id;
             const result = await ordersCollection.deleteOne({ _id: ObjectId(id) });
+            console.log(result);
             res.json(result);
         });
 
@@ -165,7 +163,18 @@ const run = async () => {
             res.json(result);
         });
 
+        // Add a review
+        app.post('/addReview', async (req, res) => {
+            const result = await reviewCollection.insertOne(req.body);
+            res.json(result);
+        });
 
+        // Get reviews
+        app.get('/reviews', async (req, res) => {
+            const result = await reviewCollection.find({}).toArray();
+            console.log(result);
+            res.json(result);
+        });
 
     }
     finally {
